@@ -19,11 +19,11 @@ interface Event {
 
 export default function Home() {
   const [events, setEvents] = useState([
-    { title: 'event 1', id: '1' },
-    { title: 'event 2', id: '2' },
-    { title: 'event 3', id: '3' },
-    { title: 'event 4', id: '4' },
-    { title: 'event 5', id: '5' },
+    { title: 'entry 1', id: '1' },
+    { title: 'entry 2', id: '2' },
+    { title: 'entry 3', id: '3' },
+    { title: 'entry 4', id: '4' },
+    { title: 'entry 5', id: '5' },
   ])
   const [allEvents, setAllEvents] = useState<Event[]>([])
   const [showModal, setShowModal] = useState(false)
@@ -145,7 +145,7 @@ export default function Home() {
             />
           </div>
           <div id="draggable-el" className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50">
-            <h1 className="font-bold text-lg text-center">Drag Event</h1>
+            <h1 className="font-bold text-lg text-center">Drag Entry</h1>
             {events.map(event => (
               <div
                 className="fc-event border-2 p-1 m-2 w-full rounded-md ml-auto text-center bg-white"
@@ -255,7 +255,7 @@ export default function Home() {
                       </div>
                       <div className="mt-3 text-center sm:mt-5">
                         <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                          Add Event
+                          Add Entry
                         </Dialog.Title>
                         <form action="submit" onSubmit={handleSubmit}>
                           <div className="mt-2">
