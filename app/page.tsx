@@ -8,6 +8,10 @@ import { Dialog, Transition } from '@headlessui/react'
 import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { EventSourceInput } from '@fullcalendar/core/index.js'
 
+import React from 'react';
+
+
+
 
 interface Event {
   title: string;
@@ -54,8 +58,14 @@ export default function Home() {
   }, [])
 
   function handleDateClick(arg: { date: Date, allDay: boolean }) {
-    setNewEvent({ ...newEvent, start: arg.date, allDay: arg.allDay, id: new Date().getTime() })
-    setShowModal(true)
+    const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfHjtwa2qtaO8E5YjdNFfHHkkf0l56gxOXS8nyf57tCC1CL2Q/viewform?usp=sf_link';
+    const formattedDate = arg.date.toISOString().split('T')[0];
+
+  // Store the formatted date in local storage
+    localStorage.setItem('selectedDate', formattedDate);
+
+  // Open the Google Form URL in a new tab
+    window.open(googleFormUrl, '_blank');
   }
 
   function addEvent(data: DropArg) {
@@ -114,11 +124,57 @@ export default function Home() {
     })
   }
 
+  const [petName, setPetName] = useState('');
+  const [error, setError] = useState('');
+
+  const isValidPetName = (petName) => {
+    return petName.length >= 1;
+  };
+  
+  const handleLogin = async () => {
+    try {
+      if (!isValidPetName(petName)) {
+        setError('Invalid pet name. Please enter a valid pet name (minimum 1 characters).');
+        return; // Do not proceed with the login if the pet name is invalid.
+      }
+  
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ petName }),
+      });
+  
+      if (response.ok) {
+        window.location.href = '/page';
+      } else {
+        setError('Invalid pet name. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setError('An error occurred. Please try again later.');
+    }
+  };
+  
+
   return (
     <>
-      <nav className="flex justify-between mb-12 border-b border-violet-100 p-4">
-        <h1 className="font-bold text-2xl text-gray-700">Cat Calendar 🐈</h1>
+
+      <nav className="flex justify-between mb-12 border-b border-violet-300 p-4 " style={{ backgroundColor: '#E8D7F7' }}>
+        <h1 className="font-bold text-2xl text-gray-700" >Cat Calendar 🐈</h1>
       </nav>
+      <h1 className="font-bold text-lg" style={{ marginLeft: '30px' }}> Login </h1>
+      <input
+        type="text"
+        style={{ marginLeft: '30px' }}
+        placeholder="Pet Name"
+        value={petName}
+        onChange={(e) => setPetName(e.target.value)}
+      />
+      <button className="inline-flex w-full justify-center rounded-md bg-violet-600 px-3 py-2 text-sm 
+                      font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={handleLogin}>Log in</button>
+      {error && <p style={{ marginLeft: '30px' }}>{error}</p>}
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="grid grid-cols-10">
           <div className="col-span-8">
