@@ -126,35 +126,43 @@ export default function Home() {
 
   const [petName, setPetName] = useState('');
   const [error, setError] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  const isValidPetName = (petName) => {
+  const isValidPetName = (petName: string) => {
     return petName.length >= 1;
   };
   
   const handleLogin = async () => {
-    try {
-      if (!isValidPetName(petName)) {
-        setError('Invalid pet name. Please enter a valid pet name (minimum 1 characters).');
-        return; // Do not proceed with the login if the pet name is invalid.
-      }
+      
+        if (!isValidPetName(petName)) {
+          setError('Invalid pet name. Please enter a valid pet name (minimum 1 character).');
+        } else {
+          // If the pet name is valid, set the login status to true
+          setLoggedIn(true);
+          setError('');
+          // You can perform other login-related actions here
+        }
+      
+
+      //setError('');
   
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ petName }),
-      });
+    //   const response = await fetch('/api/login', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ petName }),
+    //   });
   
-      if (response.ok) {
-        window.location.href = '/page';
-      } else {
-        setError('Invalid pet name. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      setError('An error occurred. Please try again later.');
-    }
+    //   if (response.ok) {
+    //     window.location.href = '/page';
+    //   } else {
+    //     setError('Invalid pet name. Please try again.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error during login:', error);
+    //   setError('An error occurred. Please try again later.');
+    // }
   };
   
 
@@ -164,17 +172,34 @@ export default function Home() {
       <nav className="flex justify-between mb-12 border-b border-violet-300 p-4 " style={{ backgroundColor: '#E8D7F7' }}>
         <h1 className="font-bold text-2xl text-gray-700" >Cat Calendar 🐈</h1>
       </nav>
-      <h1 className="font-bold text-lg" style={{ marginLeft: '30px' }}> Login </h1>
-      <input
-        type="text"
-        style={{ marginLeft: '30px' }}
-        placeholder="Pet Name"
-        value={petName}
-        onChange={(e) => setPetName(e.target.value)}
-      />
-      <button className="inline-flex w-full justify-center rounded-md bg-violet-600 px-3 py-2 text-sm 
-                      font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" onClick={handleLogin}>Log in</button>
-      {error && <p style={{ marginLeft: '30px' }}>{error}</p>}
+      {loggedIn ? (
+        <p className="font-bold text-lg text-violet-500 " style={{ marginLeft: '30px' }}>Welcome, {petName}! 🐱 </p>
+      ) : (
+        // Display the login form when the user is not logged in
+        <>
+          <h1 className="font-bold text-lg" style={{ marginLeft: '30px' }}> Login </h1>
+          <input
+            type="text"
+            style={{ marginLeft: '30px' }}
+            placeholder="Pet Name"
+            value={petName}
+            onChange={(e) => setPetName(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleLogin();
+              }
+            }}
+          />
+          <button
+            className="inline-flex w-full justify-center rounded-md bg-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+            onClick={handleLogin}
+          >
+            Log in
+          </button>
+          {error && <p style={{ marginLeft: '30px', color: 'red' }}>{error}</p>}
+        </>
+      )}
+      
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="grid grid-cols-10">
           <div className="col-span-8">
@@ -198,9 +223,10 @@ export default function Home() {
               dateClick={handleDateClick}
               drop={(data) => addEvent(data)}
               eventClick={(data) => handleDeleteModal(data)}
+    
             />
           </div>
-          <div id="draggable-el" className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50">
+          {/* <div id="draggable-el" className="ml-8 w-full border-2 p-2 rounded-md mt-16 lg:h-1/2 bg-violet-50">
             <h1 className="font-bold text-lg text-center">Drag Entry</h1>
             {events.map(event => (
               <div
@@ -211,7 +237,7 @@ export default function Home() {
                 {event.title}
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
 
         <Transition.Root show={showDeleteModal} as={Fragment}>
@@ -306,7 +332,7 @@ export default function Home() {
                 >
                   <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                     <div>
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                      {/* <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                         <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
                       </div>
                       <div className="mt-3 text-center sm:mt-5">
@@ -348,7 +374,7 @@ export default function Home() {
                             </button>
                           </div>
                         </form>
-                      </div>
+                      </div> */}
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
