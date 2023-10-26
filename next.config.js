@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-	target: 'experimental-serverless-trace', // Enables serverless deployment
+	target: 'serverless', // Enable serverless deployment
 	exportPathMap: function () {
 	  return {
 		'/': { page: '/page' }, // Specify the pages you want to export
